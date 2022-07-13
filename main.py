@@ -1,5 +1,4 @@
 import collections
-import bisect
 from simple_term_menu import TerminalMenu
 
 
@@ -30,9 +29,39 @@ tax_dict = {
             "threshold": 180000,
             "rate": 0.45
         }
+    },
+    2021:  {
+        18201: {
+            "lump": 0,
+            "threshold": 18200,
+            "rate": 0.19
+        },
+        45001: {
+            "lump": 5092,
+            "threshold": 45000,
+            "rate": 0.325
+        },
+        120001: {
+            "lump": 29467,
+            "threshold": 120000,
+            "rate": 0.37
+        },
+        180001: {
+            "lump": 51667,
+            "threshold": 180000,
+            "rate": 0.45
+        }
     }
 }
 str_map = {"2020-21": 2020, "2021-22": 2021}
+
+
+def user_input() -> float:
+    while True:
+        try:
+            return float(input("Please enter your total taxable income for the full income year::\n"))
+        except ValueError:
+            print("Input only accepts numbers.")
 
 
 def main():
@@ -43,12 +72,10 @@ def main():
     options = ["2020-21", "2021-22"]
     terminal_menu = TerminalMenu(options)
     menu_entry_index = terminal_menu.show()
-    print(f"You have selected {str_map[options[menu_entry_index]]}!")
 
-    income: float = float(
-        input("Please enter your total taxable income for the full income year::\n"))
-
-    print(income)
+    income = user_input()
+    # while not income.isdigit():
+    #     print("please enter a number")
 
     # Search through dict and find appropriate tax bracket key
 
@@ -56,26 +83,24 @@ def main():
     #     list(tax_dict[str_map[options[menu_entry_index]]].keys()), income)
 
     if income <= 18200:
-        return 0
+        print(f"The estimated tax on your taxable income is: $0")
+    else:
 
-    income_dict = tax_dict[str_map[options[menu_entry_index]]]
+        income_dict = tax_dict[str_map[options[menu_entry_index]]]
 
-    rates = income_dict.get(income) or income_dict[
-        min(income_dict.keys(), key=lambda key: abs(key-income))]
+        rates = income_dict.get(income) or income_dict[
+            min([num for num in income_dict.keys() if num < income], key=lambda x: abs(x-income))]
 
-    print("income_dict.keys()", income_dict.keys())
-    print("min(income_dict.keys(), key=lambda key: abs(key-income))",
-          min(income_dict.keys(), key=lambda key: key-income))
+        print("res", rates)
 
-    print("res", rates)
+        income_tax = rates["lump"] + \
+            ((income - rates["threshold"]) * rates["rate"])
 
-    income_tax = rates["lump"] + \
-        ((income - rates["threshold"]) * rates["rate"])
+        print(
+            f"The estimated tax on your taxable income is: ${'{:,.2f}'.format(income_tax)}")
 
-    print(income_tax)
+        return income_tax
 
-    return income_tax
-
-    # sorted(list_of_numbers, key=lambda x: abs(x - number))[0]
+        # sorted(list_of_numbers, key=lambda x: abs(x - number))[0]
 if __name__ == "__main__":
     main()
