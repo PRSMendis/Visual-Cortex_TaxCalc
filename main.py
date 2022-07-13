@@ -2,11 +2,7 @@ import collections
 from simple_term_menu import TerminalMenu
 
 
-# initializing dictionary
-tax_dict = collections.OrderedDict()
-# tax_dict = {2020: 'Hi', 2021: 'Hello'}
-
-# Might need to bump up index vals up by 1 due to binary search
+# tax_dict = collections.OrderedDict()
 tax_dict = {
     2020:  {
         18201: {
@@ -64,43 +60,35 @@ def user_input() -> float:
             print("Input only accepts numbers.")
 
 
-def main():
+def main(tax_dict, str_map):
     print("Please select the income year from the following: ")
-
-    # Choose the tax year range from options, and map to int value
+    # Choose the tax year range from options, and map to float value
 
     options = ["2020-21", "2021-22"]
     terminal_menu = TerminalMenu(options)
     menu_entry_index = terminal_menu.show()
-
     income = user_input()
-    # while not income.isdigit():
-    #     print("please enter a number")
-
     # Search through dict and find appropriate tax bracket key
-
     # idx = bisect.bisect_left(
     #     list(tax_dict[str_map[options[menu_entry_index]]].keys()), income)
 
     if income <= 18200:
         print(f"The estimated tax on your taxable income is: $0")
     else:
+        # access the year subcollection
+        year_dict = tax_dict[str_map[options[menu_entry_index]]]
 
-        income_dict = tax_dict[str_map[options[menu_entry_index]]]
+        # access the rates that affect the user based on input number
+        rates = year_dict.get(income) or year_dict[
+            min([num for num in year_dict.keys() if num < income], key=lambda x: abs(x-income))]
 
-        rates = income_dict.get(income) or income_dict[
-            min([num for num in income_dict.keys() if num < income], key=lambda x: abs(x-income))]
-
-        print("res", rates)
-
+        # calculate income tax
         income_tax = rates["lump"] + \
             ((income - rates["threshold"]) * rates["rate"])
 
         print(
             f"The estimated tax on your taxable income is: ${'{:,.2f}'.format(income_tax)}")
 
-        return income_tax
 
-        # sorted(list_of_numbers, key=lambda x: abs(x - number))[0]
 if __name__ == "__main__":
-    main()
+    main(tax_dict=tax_dict, str_map=str_map)
