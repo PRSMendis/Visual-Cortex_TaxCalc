@@ -1,5 +1,7 @@
-import collections
 from simple_term_menu import TerminalMenu
+
+# python version 3.19.12
+
 tax_dict = {
     2020:  {
         18201: {
@@ -48,8 +50,6 @@ tax_dict = {
 }
 
 str_map = {"2020-21": 2020, "2021-22": 2021}
-
-# python version 3.19.12
 
 
 def user_input() -> float:
