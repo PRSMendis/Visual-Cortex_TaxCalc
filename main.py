@@ -1,9 +1,5 @@
 import collections
 from simple_term_menu import TerminalMenu
-
-# python version 3.19.12
-
-# tax_dict = collections.OrderedDict()
 tax_dict = {
     2020:  {
         18201: {
@@ -50,7 +46,10 @@ tax_dict = {
         }
     }
 }
+
 str_map = {"2020-21": 2020, "2021-22": 2021}
+
+# python version 3.19.12
 
 
 def user_input() -> float:
@@ -87,6 +86,10 @@ def calculator(income, year_dict):
         print(
             f"The estimated tax on your taxable income is: ${'{:,.2f}'.format(income_tax)}")
 
+        # (potential optimisation) use binary search for larger dataset
+        # idx = bisect.bisect_left(
+        #     list(tax_dict[str_map[options[menu_entry_index]]].keys()), income)
+
 
 def main(tax_dict, str_map):
     print("Please select the income year from the following: ")
@@ -98,10 +101,6 @@ def main(tax_dict, str_map):
     income = user_input()
     year_dict = tax_dict[str_map[options[menu_entry_index]]]
     calculator(income=income, year_dict=year_dict)
-
-    # Search through dict and find appropriate tax bracket key
-    # idx = bisect.bisect_left(
-    #     list(tax_dict[str_map[options[menu_entry_index]]].keys()), income)
 
 
 if __name__ == "__main__":
